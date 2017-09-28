@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+
+# todo: implement a queueing mechanism similar to the one used in the example
+import struct
+import sys
+import threading
+import Queue
+import time
+
+def send_message(message):
+   # Write message size.
+  sys.stdout.write(struct.pack('I', len(message)))
+  # Write the message itself.
+  sys.stdout.write(message)
+  sys.stdout.flush()
+
+try:
+    while True:
+        text_length_bytes = sys.stdin.read(4)
+        if text_length_bytes > 0:
+            text_length = struct.unpack('i', text_length_bytes)[0]
+            text = sys.stdin.read(text_length).decode('utf-8')
+            send_message('{"echoFromNativeHost": %s}' % text)
+
+except:
+    sys.stderr.write("Error")
+    sys.stderr.flush()
+    exit(1)

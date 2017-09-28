@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+  "name": "Remote",
+  "key": "ahniojflimfbjhnjehjcaogfmafdedhl",
+  "description": "This extension allows control of websites like youtube.com or egghead.io from the comfort of your text editor",
+  "version": "1.0",
+  "browser_action": {
+    "default_icon": "remote-icon-32-32.png"
+  },
+  "background": {
+    "scripts": ["event.js"],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://egghead.io/*", "https://youtube.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "permissions": [
+    "activeTab",
+    "nativeMessaging"
+  ]
+}

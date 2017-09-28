@@ -1,0 +1,9 @@
+{
+  "name": "com.nicktomlin.remote",
+  "description": "Native Messaging Host to listen for remote events",
+  "path": "HOST_PATH",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://lojjmmniphmdbnjlbnjijjjklcpbjlhc/"
+  ]
+}
