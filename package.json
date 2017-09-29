@@ -2,11 +2,18 @@
   "name": "remote",
   "version": "1.0.0",
   "description": "Remote",
-  "main": "index.js",
+  "main": "host/server",
+  "bin": "host/client",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "util.promisify": "^1.0.0"
+  },
+  "devDependencies": {
+    "standard": "^10.0.3"
+  }
 }

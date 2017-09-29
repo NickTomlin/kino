@@ -1,0 +1,32 @@
+#!/usr/bin/env node
+
+const portConfig = require('./port')
+const net = require('net')
+const promisfy = require('util.promisify')
+const connect = promisfy(net.connect)
+
+class Client {
+  connect () {
+    portConfig.read()
+      .then(data => connect(data.port))
+  }
+
+  message () {
+    this.connect().then(connection => {
+      let buf = ''
+      connection.on('data', (chunk) => {
+        buf += chunk
+      })
+
+      connection.on('end', () => {
+        if (buf) { process.stdout.write(buf) }
+      })
+
+      connection.end(JSON.stringify({
+        message: 'hi from client'
+      }))
+    })
+  }
+}
+
+module.exports = Client
