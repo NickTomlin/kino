@@ -3,6 +3,7 @@
 // we can probably use a pageAction of some sort to show whether or not it is enabled
 
 let counter = 0
+let loop
 const port = chrome.runtime.connectNative('com.nicktomlin.remote');
 
 port.onMessage.addListener(function(msg) {
@@ -16,8 +17,7 @@ port.onDisconnect.addListener(function() {
 function sendMessage () {
   message = {'text': `Hi ${++counter}`};
   port.postMessage(message)
+  if (counter >= 20) { clearInterval(loop) }
 }
 
-setInterval(function () {
-  sendMessage()
-}, 1000)
+loop = setInterval(sendMessage, 5000)

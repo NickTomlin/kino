@@ -1,28 +1,19 @@
-#!/usr/bin/env python
+#!/Users/ntomlin/.nvm/versions/node/v8.2.1/bin/node
 
-# todo: implement a queueing mechanism similar to the one used in the example
-import struct
-import sys
-import threading
-import Queue
-import time
+process.stdin.resume()
 
-def send_message(message):
-   # Write message size.
-  sys.stdout.write(struct.pack('I', len(message)))
-  # Write the message itself.
-  sys.stdout.write(message)
-  sys.stdout.flush()
+process.stdin.on('data', (buf) => {
+  if (buf.byteLength < 5) { return }
+  let content = buf.slice(4)
 
-try:
-    while True:
-        text_length_bytes = sys.stdin.read(4)
-        if text_length_bytes > 0:
-            text_length = struct.unpack('i', text_length_bytes)[0]
-            text = sys.stdin.read(text_length).decode('utf-8')
-            send_message('{"echoFromNativeHost": %s}' % text)
+  let obj = {
+    original: JSON.parse(content)
+  }
 
-except:
-    sys.stderr.write("Error")
-    sys.stderr.flush()
-    exit(1)
+  let reply = Buffer.from(JSON.stringify(obj))
+  let length = Buffer.alloc(4)
+  length.writeUInt32LE(reply.byteLength, 0)
+
+  process.stdout.write(length)
+  process.stdout.write(reply)
+})
