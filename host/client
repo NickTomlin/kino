@@ -1,31 +1,37 @@
-#!/usr/bin/env node
-
 const portConfig = require('./port')
 const net = require('net')
-const promisfy = require('util.promisify')
-const connect = promisfy(net.connect)
 
 class Client {
   connect () {
-    portConfig.read()
-      .then(data => connect(data.port))
+    return portConfig.read()
+      .then(data => {
+        return new Promise((resolve, reject) => {
+          let socket = net.connect(data.port, function (err) {
+            if (err) { return reject(err) }
+            resolve(socket)
+          })
+        })
+      })
   }
 
-  message () {
-    this.connect().then(connection => {
-      let buf = ''
-      connection.on('data', (chunk) => {
-        buf += chunk
-      })
+  message (content = {}) {
+    this.connect().then(socket => {
+      return new Promise((resolve, reject) => {
+        let buf = ''
+        socket.on('data', (chunk) => {
+          buf += chunk
+        })
 
-      connection.on('end', () => {
-        if (buf) { process.stdout.write(buf) }
-      })
+        socket.on('end', () => resolve(buf))
+        socket.on('error', reject)
 
-      connection.end(JSON.stringify({
-        message: 'hi from client'
-      }))
+        socket.end(JSON.stringify(content))
+      })
     })
+  }
+
+  static message (message) {
+    return new Client().message(message)
   }
 }
 

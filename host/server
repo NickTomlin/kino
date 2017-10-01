@@ -2,13 +2,14 @@
 
 const net = require('net')
 const portConfig = require('./port')
-const promisify = require('util.promisify')
-const createServer = promisify(net.createServer)
 
 class Server {
-  connect () {
-    this.server = createServer()
-      .then(con => this._handleConnection(con))
+  constructor ({ onData = function () {} }) {
+    this.onData = onData
+  }
+
+  start () {
+    this.server = net.createServer(con => this._handleConnection(con))
 
     this.server.on('error', (err) => {
       throw err
@@ -21,7 +22,8 @@ class Server {
     return this
   }
 
-  disconnect () {
+  stop () {
+    portConfig.delete()
     this.server.close()
     this.connection.end()
   }
@@ -30,18 +32,21 @@ class Server {
     let data = ''
 
     connection.on('data', function (chunk) {
-      console.log('DATA!', chunk.toString)
       data += chunk
     })
+
     connection.on('end', () => {
-      console.log('end!', data)
+      if (data) {
+        this.onData(data)
+      }
+      connection.end()
     })
 
     this.connection = connection
   }
 
-  static connect () {
-    return new Server().connect()
+  static start (...args) {
+    return new Server(...args).start()
   }
 }
 

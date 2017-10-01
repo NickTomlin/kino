@@ -5,7 +5,7 @@ const promisfy = require('util.promisify')
 
 const writeFile = promisfy(fs.writeFile)
 const readFile = promisfy(fs.readFile)
-const portFilePath = path.normalize(os.homedir(), '.vim-remote-port')
+const portFilePath = path.join(os.homedir(), '.vim-remote-port')
 const unlink = promisfy(fs.unlink)
 
 const port = {
@@ -16,7 +16,7 @@ const port = {
     return readFile(portFilePath, 'utf8')
       .then(contents => ({ port: contents }))
   },
-  remove () {
+  delete () {
     return unlink(portFilePath)
   },
   portFilePath

@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+
+const Client = require('../host/client')
+
+Client.message(process.argv[2])

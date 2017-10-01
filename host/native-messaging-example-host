@@ -1,5 +1,16 @@
 #!/Users/ntomlin/.nvm/versions/node/v8.2.1/bin/node
 
+const Server = require('./server')
+
+function sendMessageToBrowser (message) {
+  let length = Buffer.alloc(4)
+  let reply = Buffer.from(message)
+  length.writeUInt32LE(reply.byteLength, 0)
+
+  process.stdout.write(length)
+  process.stdout.write(reply)
+}
+
 function handleMessageFromBrowser (buf) {
   if (buf.byteLength < 5) { return }
   let content = buf.slice(4)
@@ -8,18 +19,16 @@ function handleMessageFromBrowser (buf) {
     original: JSON.parse(content)
   }
 
-  let reply = Buffer.from(JSON.stringify(obj))
-  let length = Buffer.alloc(4)
-  length.writeUInt32LE(reply.byteLength, 0)
-
-  process.stdout.write(length)
-  process.stdout.write(reply)
+  sendMessageToBrowser(JSON.stringify(obj))
 }
 
-function handleMessageFromApplication (buf) {
-  // we are here
+function handleMessageFromApplication (message) {
+  sendMessageToBrowser(message)
 }
 
+const server = Server.start({ onData: handleMessageFromApplication })
+
+process.on('exit', server.stop)
 
 process.stdin.resume() // unpause stdin and do not close current process
 process.stdin.on('data', handleMessageFromBrowser)
