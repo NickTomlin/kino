@@ -13,11 +13,12 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://egghead.io/*", "https://youtube.com/*"],
+      "matches": ["https://egghead.io/*", "https://www.youtube.com/*"],
       "js": ["content.js"]
     }
   ],
   "permissions": [
+    "tabs",
     "activeTab",
     "nativeMessaging"
   ]

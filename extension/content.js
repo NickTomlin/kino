@@ -1,12 +1,23 @@
-// this script interacts with the page itself
-// it is responsible for listening to messages from the extension and then interacting with a videoplayer
-//
-//
-// we _may_ be able to get away with just using the browserAction api:
+const hosts = {
+  'www.youtube.com': {
+    toggle () {
+      document.querySelector('.ytp-play-button').click()
+    }
+  },
+  'egghead.io': {
+    toggle () {
+      document.querySelector('.bmpui-ui-playbacktogglebutton').click()
+    }
+  }
+}
 
-// chrome.browserAction.onClicked.addListener(function(tab) {
-//   chrome.tabs.executeScript({
-//     code: 'document.body.style.backgroundColor="red"'
-//   });
-// });
-// OR chrome.tabs.executeScript(null, {file: 'src/content.js'});
+function pageAction (action) {
+  const host = hosts[window.location.hostname]
+  if (!host || !host[action]) { return }
+
+  host[action]()
+}
+
+chrome.runtime.onMessage.addListener((message, _sender) => {
+  pageAction(message.action)
+})
