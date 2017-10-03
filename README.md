@@ -1,8 +1,8 @@
 [Kino](https://www.wired.com/2011/11/1107wireless-remote-control/)
 ---
-A chrome extension to easily control videos from your text editor: useful for coding along to tutorials or lectures.
+A chrome extension to easily manipulate chrome pages from the comfort of your text editor or OS.
 
-:warning: I'm spiking this out so nothing works right now; sorry to get your hopes up :warning:
+> ⚠️  This is currently an alpha piece of software. Feel free to use it and abuse it but don't expect amazing things ⚠️
 
 Usage
 ---
@@ -10,6 +10,8 @@ Usage
 0. Install kino `npm i kino -g` and run `kino init` to create the [native messaging host](https://developer.chrome.com/apps/nativeMessaging#native-messaging-host)
 1. Install the chrome plugin via the [chrome web store](https://chrome.google.com/webstore/detail/kino/gfonelhapmmnblbnniimhkdmnlopaabm)
 2. Install an editor plugin like the [vim plugin](https://github.com/nicktomlin/kino.vim) or the CLI via `kino action` directly
+
+Currently, there is only one supported action for `egghead.io` and `youtube`: `toggle`. All this does is toggle the 'play' button. A simple start :)
 
 Todo
 ---
