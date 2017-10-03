@@ -4,8 +4,8 @@
   "description": "Remote",
   "main": "host/server",
   "bin": {
-    "kino": "bin/client",
-    "kinoserver": "bin/server"
+    "kino": "bin/kino",
+    "kinoserver": "bin/kinoserver"
   },
   "scripts": {
     "test": "standard"

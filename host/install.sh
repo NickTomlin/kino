@@ -37,4 +37,4 @@ sed -i -e "s/HOST_PATH/$ESCAPED_HOST_PATH/" "$TARGET_DIR/$HOST_NAME.json"
 # Set permissions for the manifest so that all users can read it.
 chmod o+r "$TARGET_DIR/$HOST_NAME.json"
 
-echo "Native messaging host $HOST_NAME has been installed."
+echo "Native messaging host $HOST_NAME has been installed at:\n$TARGET_DIR/$HOST_NAME.json."

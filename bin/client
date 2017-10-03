@@ -1,5 +1,0 @@
-#!/usr/bin/env node
-
-const Client = require('../host/client')
-
-Client.action(process.argv[2])

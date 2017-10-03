@@ -1,0 +1,27 @@
+#!/usr/bin/env node
+
+const Client = require('../host/client')
+const { execSync } = require('child_process')
+const { join } = require('path')
+
+const usage = `kino - a small client to talk to your browser
+usage: kino <action> <arguments>
+
+init - install the kino native extension host
+action <action-name> - send an action to the native extension host
+help - print this message
+`
+
+const command = process.argv[2]
+
+switch (command) {
+  case 'init':
+    console.log(execSync(join(__dirname, '../host/install.sh')).toString())
+    break
+  case 'action':
+    Client.action(process.argv[3])
+    break
+  case 'help':
+  default:
+    console.log(usage)
+}
