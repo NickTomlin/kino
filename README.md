@@ -1,4 +1,4 @@
-Remote
+[Telekino](https://www.wired.com/2011/11/1107wireless-remote-control/))
 ---
 A chrome extension to easily control videos from your text editor: useful for coding along to tutorials or lectures.
 
@@ -23,6 +23,10 @@ Todo
 - [ ] spike application -> native message host
 - [ ] spike extension -> content script -> player controls (youtube)
 
+_SCIENCE FICTION:_
+
+- [] execute user provided commands
+
 Contributing
 ---
 
@@ -30,6 +34,6 @@ Contributing
 2. Clone down repo
 3. Load the extension (2nd part of usage instructions above)
 4. Note the extension id in Menu > More Tools > Extensions
-5. Edit the extensions url in `host/com.nicktomlin.remote.json` to permit that extension id
+5. Edit the extensions url in `host/com.nicktomlin.telekino.json` to permit that extension id
 6. Run `sh host/install.sh` to install the native message host in the appropriate directory
 7. That's as far as i've gotten.
