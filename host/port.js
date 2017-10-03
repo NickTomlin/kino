@@ -5,7 +5,7 @@ const promisfy = require('util.promisify')
 
 const writeFile = promisfy(fs.writeFile)
 const readFile = promisfy(fs.readFile)
-const portFilePath = path.join(os.homedir(), '.telekino-port')
+const portFilePath = path.join(os.homedir(), '.kino-port')
 const unlink = promisfy(fs.unlink)
 
 const port = {

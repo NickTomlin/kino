@@ -1,5 +1,5 @@
 {
-  "name": "@nicktomlin/telekino",
+  "name": "@nicktomlin/kino",
   "version": "1.0.0",
   "description": "Remote",
   "main": "host/server",

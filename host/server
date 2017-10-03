@@ -13,7 +13,7 @@ class Server {
     if (this.debug) {
       // reminder: chrome wants us to log to stderr for debugging
       // so we'll need to change this when running in the native context
-      console.error('Telekino Server:', ...args)
+      console.error('Kino Server:', ...args)
     }
   }
 

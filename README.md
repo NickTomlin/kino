@@ -1,4 +1,4 @@
-[Telekino](https://www.wired.com/2011/11/1107wireless-remote-control/))
+[Kino](https://www.wired.com/2011/11/1107wireless-remote-control/))
 ---
 A chrome extension to easily control videos from your text editor: useful for coding along to tutorials or lectures.
 
@@ -7,14 +7,9 @@ A chrome extension to easily control videos from your text editor: useful for co
 Usage
 ---
 
-1. Install this plugin via the [chrome web store (link to come)]()
-
-**OR**
-
-1. Clone this repo
-2. In chrome, go to `tools > extensions`
-3. Click "load unpacked extension"
-4. Navigate to the repository directory and load it
+1. Install the [vim plugin](https://github.com/nicktomlin/kino.vim)
+  - This will ask you to install the kino client/server: `npm i @nicktomlin/kino -g`
+2. Install this plugin via the [chrome web store (link to come)]()
 
 Todo
 ---
@@ -32,8 +27,10 @@ Contributing
 
 1. Fork repo
 2. Clone down repo
-3. Load the extension (2nd part of usage instructions above)
+2. In chrome, go to `tools > extensions`
+3. Click "load unpacked extension"
+4. Navigate to the repository directory and load it
 4. Note the extension id in Menu > More Tools > Extensions
-5. Edit the extensions url in `host/com.nicktomlin.telekino.json` to permit that extension id
+5. Edit the extensions url in `host/com.nicktomlin.kino.json` to permit that extension id
 6. Run `sh host/install.sh` to install the native message host in the appropriate directory
 7. That's as far as i've gotten.

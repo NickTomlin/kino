@@ -21,7 +21,7 @@ else
   fi
 fi
 
-HOST_NAME=com.nicktomlin.telekino
+HOST_NAME=com.nicktomlin.kino
 
 # Create directory to store native messaging host.
 mkdir -p "$TARGET_DIR"

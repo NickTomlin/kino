@@ -1,5 +1,5 @@
 {
-  "name": "com.nicktomlin.telekino",
+  "name": "com.nicktomlin.kino",
   "description": "Native Messaging Host to listen for remote events",
   "path": "HOST_PATH",
   "type": "stdio",

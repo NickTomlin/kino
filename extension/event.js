@@ -2,7 +2,7 @@
 // and sends info to a content script on the current page
 // we can probably use a pageAction of some sort to show whether or not it is enabled
 
-const port = chrome.runtime.connectNative('com.nicktomlin.telekino')
+const port = chrome.runtime.connectNative('com.nicktomlin.kino')
 
 function pageAction (action) {
   chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
