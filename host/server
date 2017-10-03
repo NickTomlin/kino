@@ -1,4 +1,4 @@
-#!/user/bin/env node
+#!/usr/local/bin/node
 
 const net = require('net')
 const portConfig = require('./port')
