@@ -25,6 +25,22 @@ _SCIENCE FICTION:_
 
 - [ ] execute user provided commands
 
+Troubleshooting
+---
+
+There is very light logging available via the event page:
+
+- Open the [background page](chrome-extension://gfonelhapmmnblbnniimhkdmnlopaabm/_generated_background_page.html) (or menu > "more tools" > "extensions" and click "background page")
+- Open the console
+- hit reload and see what error messages pop up
+- attempt to send a kino action `kino action toggle` and see if there is any logging
+
+### Common issues
+
+- have you run `kino init` ?
+- Is `node` available at `/usr/local/bin/node` ? If not, `ln -s <path to node> /usr/local/bin/node` and disable/enable the extension 
+  - alas, chrome cannot use `/usr/bin/env node` when launching the native extension host
+
 Contributing
 ---
 
