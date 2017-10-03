@@ -1,0 +1,27 @@
+#!/usr/bin/env node
+
+const Server = require('../host/server')
+
+const command = process.argv[2]
+const helpText = `usage: server <command>
+
+start - start server
+help - Print this text
+
+This is the server for remote and can be used for testing.
+
+`
+
+function start () {
+  const server = Server.start({ debug: true })
+  process.on('exit', server.stop)
+}
+
+switch (command) {
+  case 'start':
+    start()
+    break
+
+  default:
+    console.log(helpText)
+}

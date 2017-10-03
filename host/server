@@ -4,25 +4,38 @@ const net = require('net')
 const portConfig = require('./port')
 
 class Server {
-  constructor ({ onData = function () {} }) {
+  constructor ({ onData = function () {}, debug = false }) {
     this.onData = onData
+    this.debug = debug
+  }
+
+  _log (...args) {
+    if (this.debug) {
+      // reminder: chrome wants us to log to stderr for debugging
+      // so we'll need to change this when running in the native context
+      console.error('Remote Server:', ...args)
+    }
   }
 
   start () {
     this.server = net.createServer(con => this._handleConnection(con))
 
     this.server.on('error', (err) => {
+      this._log('Error:', err)
       throw err
     })
 
-    this.server.listen(0, '127.0.0.1', () => (
-      portConfig.write(this.server.address().port)
-    ))
+    this.server.listen(0, '127.0.0.1', () => {
+      const port = this.server.address().port
+      this._log('Writing Port', port)
+      portConfig.write(port)
+    })
 
     return this
   }
 
   stop () {
+    this._log('Closing server')
     portConfig.delete()
     this.server.close()
     this.connection.end()
@@ -31,11 +44,13 @@ class Server {
   _handleConnection (connection) {
     let data = ''
 
-    connection.on('data', function (chunk) {
+    connection.on('data', (chunk) => {
+      this._log('Received Chunk', chunk)
       data += chunk
     })
 
     connection.on('end', () => {
+      this._log('Connection Ended', data)
       if (data) {
         this.onData(data)
       }
