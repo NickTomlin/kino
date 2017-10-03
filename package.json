@@ -6,7 +6,7 @@
   "bin": {
     "kino": "bin/client",
     "kinoserver": "bin/server"
-  }",
+  },
   "scripts": {
     "test": "standard"
   },
