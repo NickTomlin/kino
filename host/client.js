@@ -25,13 +25,17 @@ class Client {
         socket.on('end', () => resolve(buf))
         socket.on('error', reject)
 
-        socket.end(JSON.stringify(content))
+        socket.end(JSON.stringify(JSON.stringify(content))) // don't ask
       })
     })
   }
 
   static message (message) {
     return new Client().message(message)
+  }
+
+  static action (action) {
+    Client.message({ action })
   }
 }
 
