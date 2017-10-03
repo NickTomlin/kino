@@ -1,4 +1,4 @@
-[Kino](https://www.wired.com/2011/11/1107wireless-remote-control/))
+[Kino](https://www.wired.com/2011/11/1107wireless-remote-control/)
 ---
 A chrome extension to easily control videos from your text editor: useful for coding along to tutorials or lectures.
 
