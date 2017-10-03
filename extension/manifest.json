@@ -4,8 +4,11 @@
   "key": "ahniojflimfbjhnjehjcaogfmafdedhl",
   "description": "This extension allows control of websites like youtube.com or egghead.io from the comfort of your text editor",
   "version": "1.0",
+  "icons" : {
+    "128": "kino-logo@3x.png"
+  },
   "browser_action": {
-    "default_icon": "remote-icon-32-32.png"
+    "default_icon": "kino-logo.png"
   },
   "background": {
     "scripts": ["event.js"],
