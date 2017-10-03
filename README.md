@@ -2,7 +2,7 @@
 ---
 A chrome extension to easily manipulate chrome pages from the comfort of your text editor or OS.
 
-> ⚠️  This is currently an alpha piece of software. Feel free to use it and abuse it but don't expect amazing things ⚠️
+> ⚠️ This is currently an alpha; feel free to use it but don't expect amazing things ⚠️
 
 Usage
 ---
@@ -19,11 +19,11 @@ Todo
 - [x] spike extension -> native message host
 - [x] spike application -> native message host
 - [x] spike extension -> content script -> player controls (youtube)
-- [] scroll back -> forward
+- [ ] scroll back -> forward
 
 _SCIENCE FICTION:_
 
-- [] execute user provided commands
+- [ ] execute user provided commands
 
 Contributing
 ---
