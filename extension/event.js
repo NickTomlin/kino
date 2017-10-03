@@ -4,15 +4,16 @@
 
 const port = chrome.runtime.connectNative('com.nicktomlin.kino')
 
-function pageAction (action) {
+function pageAction (action, message) {
   chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
     if (!tabs.length) { console.info('No tabs found; you may have another window (like an inspector) on top of the video tab'); return }
     if (chrome.runtime.lastError) {
-      console.log(tabs, chrome.rruntime.lastError.message)
+      console.log('Error querying tabs', tabs, chrome.runtime.lastError.message)
     }
 
     chrome.tabs.sendMessage(tabs[0].id, {
-      action
+      action,
+      message
     })
   })
 }
@@ -21,11 +22,8 @@ port.onMessage.addListener((rawMessage) => {
   let message = {}
   try { message = JSON.parse(rawMessage) } catch (e) {}
   console.info('Received native message', message)
-  switch (message.action) {
-    case 'toggle':
-      return pageAction(message.action)
-    default:
-  }
+
+  if (message.action) { pageAction(message.action, message) }
 })
 
 port.onDisconnect.addListener(() => {
