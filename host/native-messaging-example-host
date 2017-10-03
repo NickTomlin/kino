@@ -1,4 +1,4 @@
-#!/Users/ntomlin/.nvm/versions/node/v8.2.1/bin/node
+#!/usr/local/bin/node
 
 const Server = require('./server')
 
