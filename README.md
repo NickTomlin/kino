@@ -8,7 +8,7 @@ Usage
 ---
 
 1. Install the [vim plugin](https://github.com/nicktomlin/kino.vim)
-  - This will ask you to install the kino client/server: `npm i @nicktomlin/kino -g`
+  - This will ask you to install the kino client/server: `npm i kino -g`
 2. Install this plugin via the [chrome web store (link to come)]()
 
 Todo
