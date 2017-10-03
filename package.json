@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "Remote",
   "main": "host/server",
-  "bin": "host/client",
+  "bin": {
+    "kino": "bin/client",
+    "kinoserver": "bin/server"
+  }",
   "scripts": {
     "test": "standard"
   },
