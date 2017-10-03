@@ -5,7 +5,7 @@
   "main": "host/server",
   "bin": "host/client",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "standard"
   },
   "keywords": [],
   "author": "",
@@ -14,7 +14,9 @@
     "util.promisify": "^1.0.0"
   },
   "standard": {
-    "globals": ["chrome"]
+    "globals": [
+      "chrome"
+    ]
   },
   "devDependencies": {
     "standard": "^10.0.3"
