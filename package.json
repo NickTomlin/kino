@@ -8,14 +8,16 @@
     "kinoserver": "bin/kinoserver"
   },
   "scripts": {
-    "test": "standard"
+    "test": "standard",
+    "package": "zip -r kino.zip extension"
   },
   "keywords": [],
-  "author": "",
+  "author": "Nick Tomlin <nick.tomlin@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "util.promisify": "^1.0.0"
   },
+  "files": ["bin", "host"],
   "standard": {
     "globals": [
       "chrome"
