@@ -19,11 +19,7 @@ Todo
 - [x] spike extension -> native message host
 - [x] spike application -> native message host
 - [x] spike extension -> content script -> player controls (youtube)
-- [ ] scroll back -> forward
-
-_SCIENCE FICTION:_
-
-- [ ] execute user provided commands
+- [ ] user defined commands
 
 Troubleshooting
 ---
@@ -38,7 +34,7 @@ There is very light logging available via the event page:
 ### Common issues
 
 - have you run `kino init` ?
-- Is `node` available at `/usr/local/bin/node` ? If not, `ln -s <path to node> /usr/local/bin/node` and disable/enable the extension 
+- Is `node` available at `/usr/local/bin/node`? If not, `ln -s <path to node> /usr/local/bin/node` and disable/enable the extension
   - alas, chrome cannot use `/usr/bin/env node` when launching the native extension host
 
 Contributing
@@ -49,7 +45,5 @@ Contributing
 2. In chrome, go to `tools > extensions`
 3. Click "load unpacked extension"
 4. Navigate to the repository directory and load it
-4. Note the extension id in Menu > More Tools > Extensions
-5. Edit the extensions url in `host/com.nicktomlin.kino.json` to permit that extension id
-6. Run `./bin/kino init` to install the native messaging host
-7. Reload the extension
+5. Run `./bin/kino init` to install the native messaging host
+6. Reload the extension
