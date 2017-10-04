@@ -20,7 +20,8 @@
   "files": ["bin", "host"],
   "standard": {
     "globals": [
-      "chrome"
+      "chrome",
+      "URL"
     ]
   },
   "devDependencies": {

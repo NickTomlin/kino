@@ -1,6 +1,32 @@
 // this page listens for messages from the native messaging bus
-// and sends info to a content script on the current page
-// we can probably use a pageAction of some sort to show whether or not it is enabled
+// we need to decide on the syntax for these commands
+
+/*
+Perhaps?
+
+hosts = {
+  [hostname]: { [action]: 'code' }
+  '*': { [action]: 'code' }
+}
+
+how are we going to store them?
+
+is there a way to protect against cross site scripting?
+*/
+const hosts = {
+  'www.youtube.com': {
+    toggle () {
+      return `
+        document.querySelector('.ytp-play-button').click()
+      `
+    }
+  },
+  'egghead.io': {
+    toggle () {
+      return `document.querySelector('.bmpui-ui-playbacktogglebutton').click()`
+    }
+  }
+}
 
 const port = chrome.runtime.connectNative('com.nicktomlin.kino')
 
@@ -10,11 +36,12 @@ function pageAction (action, message) {
     if (chrome.runtime.lastError) {
       console.log('Error querying tabs', tabs, chrome.runtime.lastError.message)
     }
+    const hostname = new URL(tabs[0].url).hostname
+    const host = hosts[hostname]
 
-    chrome.tabs.sendMessage(tabs[0].id, {
-      action,
-      message
-    })
+    if (host && host[action]) {
+      chrome.tabs.executeScript(tabs[0].id, { code: host[action](message) })
+    }
   })
 }
 

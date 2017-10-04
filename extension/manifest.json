@@ -13,13 +13,9 @@
     "scripts": ["event.js"],
     "persistent": false
   },
-  "content_scripts": [
-    {
-      "matches": ["https://egghead.io/*", "https://www.youtube.com/*"],
-      "js": ["content.js"]
-    }
-  ],
   "permissions": [
+    "http://*/",
+    "https://*/",
     "tabs",
     "activeTab",
     "nativeMessaging"
