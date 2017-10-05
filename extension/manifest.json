@@ -6,6 +6,10 @@
   "icons" : {
     "128": "kino-logo@3x.png"
   },
+  "options_ui": {
+    "page": "options/options.html",
+    "chrome_style": true
+  },
   "browser_action": {
     "default_icon": "kino-logo.png"
   },
@@ -18,6 +22,7 @@
     "https://*/",
     "tabs",
     "activeTab",
-    "nativeMessaging"
+    "nativeMessaging",
+    "storage"
   ]
 }

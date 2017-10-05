@@ -1,46 +1,47 @@
-// this page listens for messages from the native messaging bus
-// we need to decide on the syntax for these commands
-
-/*
-Perhaps?
-
-hosts = {
-  [hostname]: { [action]: 'code' }
-  '*': { [action]: 'code' }
-}
-
-how are we going to store them?
-
-is there a way to protect against cross site scripting?
-*/
-const hosts = {
+const defaultMappings = {
   'www.youtube.com': {
-    toggle () {
-      return `
-        document.querySelector('.ytp-play-button').click()
-      `
-    }
+    toggle: `document.querySelector('.ytp-play-button').click()`
   },
   'egghead.io': {
-    toggle () {
-      return `document.querySelector('.bmpui-ui-playbacktogglebutton').click()`
-    }
+    toggle: `document.querySelector('.bmpui-ui-playbacktogglebutton').click()`
+  },
+  '*': {
+    test: `
+    const t = document.createElement('h1')
+    t.textContent = 'inserted'
+    document.body.prepend(t)
+    `
   }
+}
+
+function getMappings () {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get('mappings', (data) => {
+      if (data) {
+        chrome.storage.local.set({ mappings: defaultMappings })
+        return resolve(defaultMappings)
+      }
+
+      resolve(data.mappings)
+    })
+  })
 }
 
 const port = chrome.runtime.connectNative('com.nicktomlin.kino')
 
 function pageAction (action, message) {
-  chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+  chrome.tabs.query({active: true}, async (tabs) => {
     if (!tabs.length) { console.info('No tabs found; you may have another window (like an inspector) on top of the video tab'); return }
     if (chrome.runtime.lastError) {
       console.log('Error querying tabs', tabs, chrome.runtime.lastError.message)
     }
-    const hostname = new URL(tabs[0].url).hostname
-    const host = hosts[hostname]
 
-    if (host && host[action]) {
-      chrome.tabs.executeScript(tabs[0].id, { code: host[action](message) })
+    const hostname = new URL(tabs[0].url).hostname
+    const mappings = await getMappings()
+
+    const code = (mappings[hostname] && mappings[hostname][action]) || mappings['*'][action]
+    if (code) {
+      chrome.tabs.executeScript(tabs[0].id, { code })
     }
   })
 }
