@@ -1,20 +1,33 @@
+/* global Prism */
 const { Component, h, render } = window.preact
 
-function Action ({ actionName, code }) {
-  return h('div', { className: 'action' },
-    h('p', null, actionName),
-    h('pre', null, h('code', null, code))
+function codeToMarkup (code) {
+  return Prism.highlight(
+    Prism.plugins.NormalizeWhitespace.normalize(code),
+    Prism.languages.javascript
   )
 }
 
-function Host ({ hostname, actions }) {
+function Action ({ actionName, code }) {
+  const __html = codeToMarkup(code)
+
+  return h('div', { className: 'action' },
+    h('p', { className: 'action-title' }, actionName),
+    h('pre', { className: 'code' }, h('code', {dangerouslySetInnerHTML: { __html }}))
+  )
+}
+
+function Host ({ hostname, actions, onActionAdd }) {
   const renderedActions = Object.keys(actions)
     .map(actionName => h(Action, {
       actionName, code: actions[actionName]
     }))
 
   return h('div', { className: 'host' },
-    h('h1', { className: 'hostname' }, hostname),
+    h('header', { className: 'hostname' },
+      h('span', { className: 'hostname-title' }, hostname),
+      h('button', {onClick: onActionAdd}, '+ Add action')
+    ),
     renderedActions
   )
 }
@@ -26,6 +39,43 @@ function Hostnames ({ mappings }) {
       actions: mappings[hostname]
     })
   }))
+}
+
+class AddHost extends Component {
+  constructor () {
+    super()
+    this.state.valid = true
+  }
+
+  onSubmit () {
+    try {
+      let url = new URL(this.input.value)
+      this.props.onSubmit(url.hostname)
+    } catch (e) {
+      this.setState({ valid: false, error: e.toString() })
+    }
+  }
+
+  onKeyup (e) {
+    if (e.key === 'Enter') {
+      this.onSubmit()
+    } else {
+      this.setState({ valid: true, error: null })
+    }
+  }
+
+  render () {
+    return h('div', null,
+      h('input', {
+        style: this.state.valid ? '' : `border: 1px solid red`,
+        placeholder: 'https://example.com',
+        onKeyup: this.onKeyup.bind(this),
+        ref: c => (this.input = c)
+      }, null),
+      h('button', { onClick: this.onSubmit.bind(this) }, '+ Add Host'),
+      this.state.error ? h('span', {}, this.state.error) : null
+    )
+  }
 }
 
 class Options extends Component {
@@ -41,11 +91,31 @@ class Options extends Component {
     })
   }
 
+  onHostAdd (hostname) {
+    chrome.storage.local.get('mappings', (data) => {
+      if (hostname in data.mappings) {
+        return
+      }
+      const mappings = { ...data.mappings, [hostname]: {} }
+
+      chrome.storage.local.set({
+        mappings
+      }, () => {
+        if (!chrome.runtime.lastError) {
+          this.setState({ mappings })
+        }
+      })
+    })
+  }
+
   render () {
     const { mappings } = this.state
 
+    if (!mappings) { return null }
+
     return h('div', {},
-      mappings ? h(Hostnames, { mappings }) : h('p', null, 'No mappings')
+      h(Hostnames, { mappings }),
+      h(AddHost, { onSubmit: this.onHostAdd.bind(this) })
     )
   }
 }

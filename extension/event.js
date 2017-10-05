@@ -1,3 +1,4 @@
+const allHosts = '<all-hosts>'
 const defaultMappings = {
   'www.youtube.com': {
     toggle: `document.querySelector('.ytp-play-button').click()`
@@ -5,7 +6,7 @@ const defaultMappings = {
   'egghead.io': {
     toggle: `document.querySelector('.bmpui-ui-playbacktogglebutton').click()`
   },
-  '*': {
+  [allHosts]: {
     test: `
     const t = document.createElement('h1')
     t.textContent = 'inserted'
@@ -39,7 +40,7 @@ function pageAction (action, message) {
     const hostname = new URL(tabs[0].url).hostname
     const mappings = await getMappings()
 
-    const code = (mappings[hostname] && mappings[hostname][action]) || mappings['*'][action]
+    const code = (mappings[hostname] && mappings[hostname][action]) || mappings[allHosts][action]
     if (code) {
       chrome.tabs.executeScript(tabs[0].id, { code })
     }

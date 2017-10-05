@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Kino Options</title>
+  <link rel="stylesheet" href="../vendor/prism.css" type="text/css" charset="utf-8">
   <style>
     body { padding: 10px; }
     .host {
@@ -12,13 +13,37 @@
       margin: 1rem 0;
     }
 
+    .hostname {
+      font-family: monospace;
+    }
+
+    .hostname-title {
+      font-size: 1rem;
+      padding-right: 1rem;
+    }
+
+    .code {
+      color: #f3eded;
+      padding: 1em;
+      background: #32332c;
+      margin: 0 0 .5em 0;
+      border-radius: 0.35em;
+      max-width: 45em;
+      overflow: auto;
+    }
+
     .action {
       padding-left: 1rem;
     }
 
-    .hostname {
+    .action-title {
+      display: inline-block;
+      font-weight: bold;
+      font-size: 1.1rem;
       font-family: monospace;
     }
+
+    .action-title {}
   </style>
 </head>
 <body>
@@ -27,6 +52,7 @@
 
   <div id="app"></div>
   <script src="../vendor/preact@8.2.5.min.js"></script>
+  <script src="../vendor/prism.js"></script>
   <script src="options.js"></script>
 </body>
 </html>

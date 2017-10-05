@@ -21,6 +21,7 @@
   "standard": {
     "globals": [
       "chrome",
+      "prism",
       "URL"
     ]
   },
