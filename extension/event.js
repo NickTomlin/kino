@@ -1,33 +1,4 @@
-const allHosts = '<all-hosts>'
-const defaultMappings = {
-  'www.youtube.com': {
-    toggle: `document.querySelector('.ytp-play-button').click()`
-  },
-  'egghead.io': {
-    toggle: `document.querySelector('.bmpui-ui-playbacktogglebutton').click()`
-  },
-  [allHosts]: {
-    test: `
-    const t = document.createElement('h1')
-    t.textContent = 'inserted'
-    document.body.prepend(t)
-    `
-  }
-}
-
-function getMappings () {
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.get('mappings', (data) => {
-      if (!data || !data.mappings) {
-        chrome.storage.sync.set({ mappings: defaultMappings })
-        return resolve(defaultMappings)
-      }
-
-      resolve(data.mappings)
-    })
-  })
-}
-
+/* global Storage */
 const port = chrome.runtime.connectNative('com.nicktomlin.kino')
 
 function pageAction (action, message) {
@@ -38,9 +9,9 @@ function pageAction (action, message) {
     }
 
     const hostname = new URL(tabs[0].url).hostname
-    const mappings = await getMappings()
+    const mappings = await Storage.getMappingsWithDefaults()
 
-    const code = (mappings[hostname] && mappings[hostname][action]) || mappings[allHosts][action]
+    const code = (mappings[hostname] && mappings[hostname][action]) || mappings[Storage.ALL_HOSTS][action]
     if (code) {
       chrome.tabs.executeScript(tabs[0].id, { code })
     }

@@ -1,29 +1,5 @@
-/* global Prism */
+/* global Prism, Storage */
 const { Component, h, render } = window.preact
-
-function storageSet (data) {
-  return new Promise(function (resolve, reject) {
-    chrome.storage.sync.set(data, () => {
-      if (!chrome.runtime.lastError) {
-        resolve(data)
-      } else {
-        reject(chrome.runtime.lastError)
-      }
-    })
-  })
-}
-
-function storageGet (key) {
-  return new Promise(function (resolve, reject) {
-    chrome.storage.sync.get(key, (data) => {
-      if (!chrome.runtime.lastError) {
-        resolve(data[key])
-      } else {
-        reject(chrome.runtime.lastError)
-      }
-    })
-  })
-}
 
 function codeToMarkup (code) {
   return Prism.highlight(
@@ -172,17 +148,16 @@ class Options extends Component {
   }
 
   async componentDidMount () {
-    const mappings = await storageGet('mappings')
-    if (!mappings) { return false }
+    const mappings = await Storage.getMappingsWithDefaults()
     this.setState({ mappings })
   }
 
   async onHostAdd (hostname) {
-    const currentMappings = await storageGet('mappings')
+    const currentMappings = await Storage.get('mappings')
     if (hostname in currentMappings) { return }
     const mappings = { ...currentMappings, [hostname]: {} }
 
-    await storageSet({ mappings })
+    await Storage.set({ mappings })
     this.setState({ mappings }, () => (
       // this is a punt around the bad UX we currently have with adding hosts
       // (e.g. they are wayyy out of frame with multiple hosts)
@@ -197,13 +172,13 @@ class Options extends Component {
   }
 
   async onActionChange (hostname, actionName, code) {
-    const mappings = await storageGet('mappings')
+    const mappings = await Storage.get('mappings')
     mappings[hostname] = {
       ...mappings[hostname],
       [actionName]: code
     }
 
-    await storageSet({ mappings })
+    await Storage.set({ mappings })
     this.setState({ mappings })
   }
 
