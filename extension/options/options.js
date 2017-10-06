@@ -183,7 +183,17 @@ class Options extends Component {
     const mappings = { ...currentMappings, [hostname]: {} }
 
     await storageSet({ mappings })
-    this.setState({ mappings })
+    this.setState({ mappings }, () => (
+      // this is a punt around the bad UX we currently have with adding hosts
+      // (e.g. they are wayyy out of frame with multiple hosts)
+      // in the future we'll hopefully have a more ergonomic flow that will remove the
+      // need for this
+      [...(document.querySelectorAll('.host'))]
+      .filter(ele => (
+        ele.querySelector('.hostname-title').textContent === hostname)
+      )
+      .forEach(ele => ele.scrollIntoView())
+    ))
   }
 
   async onActionChange (hostname, actionName, code) {
