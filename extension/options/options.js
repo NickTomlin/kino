@@ -1,6 +1,30 @@
 /* global Prism */
 const { Component, h, render } = window.preact
 
+function storageSet (data) {
+  return new Promise(function (resolve, reject) {
+    chrome.storage.local.set(data, () => {
+      if (!chrome.runtime.lastError) {
+        resolve(data)
+      } else {
+        reject(chrome.runtime.lastError)
+      }
+    })
+  })
+}
+
+function storageGet (key) {
+  return new Promise(function (resolve, reject) {
+    chrome.storage.local.get(key, (data) => {
+      if (!chrome.runtime.lastError) {
+        resolve(data[key])
+      } else {
+        reject(chrome.runtime.lastError)
+      }
+    })
+  })
+}
+
 function codeToMarkup (code) {
   return Prism.highlight(
     Prism.plugins.NormalizeWhitespace.normalize(code),
@@ -17,26 +41,83 @@ function Action ({ actionName, code }) {
   )
 }
 
-function Host ({ hostname, actions, onActionAdd }) {
-  const renderedActions = Object.keys(actions)
-    .map(actionName => h(Action, {
-      actionName, code: actions[actionName]
-    }))
-
-  return h('div', { className: 'host' },
-    h('header', { className: 'hostname' },
-      h('span', { className: 'hostname-title' }, hostname),
-      h('button', {onClick: onActionAdd}, '+ Add action')
-    ),
-    renderedActions
+function AddAction ({ createAction, cancelCreateAction }) {
+  return h('div', {},
+    h('input', {
+      style: 'display: block',
+      ref: (c) => (this.input = c),
+      placeholder: 'Action Name'
+    }),
+    h('textarea', {
+      ref: (c) => (this.textarea = c),
+      placeholder: 'document.body.style.color = "red"',
+      rows: 5,
+      cols: 50
+    }),
+    h('div', null,
+      h('button', {
+        onClick: () => {
+          createAction(this.input.value, this.textarea.value)
+          this.textarea.value = ''
+          this.input.value = ''
+        }
+      }, 'Add'),
+      h('button', {
+        onClick: () => {
+          this.textarea.value = ''
+          this.input.value = ''
+          cancelCreateAction()
+        }
+      }, 'Cancel')
+    )
   )
 }
 
-function Hostnames ({ mappings }) {
+class Host extends Component {
+  constructor () {
+    super()
+    this.editing = false
+  }
+
+  onActionChange (hostname, actionName, code) {
+    this.setState({ editing: false })
+    this.props.onActionChange(hostname, actionName, code)
+  }
+
+  addAction () {
+    this.setState({ editing: true })
+  }
+
+  render () {
+    const { hostname, actions } = this.props
+    const { editing } = this.state
+    const renderedActions = Object.keys(actions)
+      .map(actionName => h(Action, {
+        actionName,
+        code: actions[actionName]
+      }))
+
+    return h('div', { className: 'host' },
+      h('header', { className: 'hostname' },
+        h('span', { className: 'hostname-title' }, hostname),
+        h('button', {onClick: this.addAction.bind(this)}, '+ Add action'),
+        editing
+        ? h(AddAction, {
+          createAction: this.onActionChange.bind(this, hostname),
+          cancelCreateAction: () => { this.setState({ editing: false }) }
+        }) : null
+      ),
+      renderedActions
+    )
+  }
+}
+
+function Hostnames ({ mappings, onActionChange }) {
   return h('div', {}, Object.keys(mappings).map(hostname => {
     return h(Host, {
       hostname,
-      actions: mappings[hostname]
+      actions: mappings[hostname],
+      onActionChange
     })
   }))
 }
@@ -51,6 +132,7 @@ class AddHost extends Component {
     try {
       let url = new URL(this.input.value)
       this.props.onSubmit(url.hostname)
+      this.input.value = ''
     } catch (e) {
       this.setState({ valid: false, error: e.toString() })
     }
@@ -84,28 +166,30 @@ class Options extends Component {
     this.state.mappings = null
   }
 
-  componentDidMount () {
-    chrome.storage.local.get('mappings', ({ mappings }) => {
-      if (!mappings) { return false }
-      this.setState({ mappings })
-    })
+  async componentDidMount () {
+    const mappings = await storageGet('mappings')
+    if (!mappings) { return false }
+    this.setState({ mappings })
   }
 
-  onHostAdd (hostname) {
-    chrome.storage.local.get('mappings', (data) => {
-      if (hostname in data.mappings) {
-        return
-      }
-      const mappings = { ...data.mappings, [hostname]: {} }
+  async onHostAdd (hostname) {
+    const currentMappings = await storageGet('mappings')
+    if (hostname in currentMappings) { return }
+    const mappings = { ...currentMappings, [hostname]: {} }
 
-      chrome.storage.local.set({
-        mappings
-      }, () => {
-        if (!chrome.runtime.lastError) {
-          this.setState({ mappings })
-        }
-      })
-    })
+    await storageSet({ mappings })
+    this.setState({ mappings })
+  }
+
+  async onActionChange (hostname, actionName, code) {
+    const mappings = await storageGet('mappings')
+    mappings[hostname] = {
+      ...mappings[hostname],
+      [actionName]: code
+    }
+
+    await storageSet({ mappings })
+    this.setState({ mappings })
   }
 
   render () {
@@ -114,8 +198,8 @@ class Options extends Component {
     if (!mappings) { return null }
 
     return h('div', {},
-      h(Hostnames, { mappings }),
-      h(AddHost, { onSubmit: this.onHostAdd.bind(this) })
+      h(AddHost, { onSubmit: this.onHostAdd.bind(this) }),
+      h(Hostnames, { mappings, onActionChange: this.onActionChange.bind(this) })
     )
   }
 }
