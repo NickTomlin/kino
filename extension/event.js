@@ -17,9 +17,9 @@ const defaultMappings = {
 
 function getMappings () {
   return new Promise((resolve, reject) => {
-    chrome.storage.local.get('mappings', (data) => {
+    chrome.storage.sync.get('mappings', (data) => {
       if (!data || !data.mappings) {
-        chrome.storage.local.set({ mappings: defaultMappings })
+        chrome.storage.sync.set({ mappings: defaultMappings })
         return resolve(defaultMappings)
       }
 

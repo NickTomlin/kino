@@ -3,7 +3,7 @@ const { Component, h, render } = window.preact
 
 function storageSet (data) {
   return new Promise(function (resolve, reject) {
-    chrome.storage.local.set(data, () => {
+    chrome.storage.sync.set(data, () => {
       if (!chrome.runtime.lastError) {
         resolve(data)
       } else {
@@ -15,7 +15,7 @@ function storageSet (data) {
 
 function storageGet (key) {
   return new Promise(function (resolve, reject) {
-    chrome.storage.local.get(key, (data) => {
+    chrome.storage.sync.get(key, (data) => {
       if (!chrome.runtime.lastError) {
         resolve(data[key])
       } else {
