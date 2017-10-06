@@ -41,36 +41,41 @@ function Action ({ actionName, code }) {
   )
 }
 
-function AddAction ({ createAction, cancelCreateAction }) {
-  return h('div', {},
-    h('input', {
-      style: 'display: block',
-      ref: (c) => (this.input = c),
-      placeholder: 'Action Name'
-    }),
-    h('textarea', {
-      ref: (c) => (this.textarea = c),
-      placeholder: 'document.body.style.color = "red"',
-      rows: 5,
-      cols: 50
-    }),
-    h('div', null,
-      h('button', {
-        onClick: () => {
-          createAction(this.input.value, this.textarea.value)
-          this.textarea.value = ''
-          this.input.value = ''
-        }
-      }, 'Add'),
-      h('button', {
-        onClick: () => {
-          this.textarea.value = ''
-          this.input.value = ''
-          cancelCreateAction()
-        }
-      }, 'Cancel')
+class AddAction extends Component {
+  clearInputs () {
+    this.textarea.value = ''
+    this.input.value = ''
+  }
+
+  create () {
+    this.props.createAction(this.input.value, this.textarea.value)
+    this.clearInputs()
+  }
+
+  cancel () {
+    this.clearInputs()
+    this.props.cancelCreateAction()
+  }
+
+  render () {
+    return h('div', {},
+      h('input', {
+        style: 'display: block',
+        ref: (c) => (this.input = c),
+        placeholder: 'Action Name'
+      }),
+      h('textarea', {
+        ref: (c) => (this.textarea = c),
+        placeholder: 'document.body.style.color = "red"',
+        rows: 5,
+        cols: 50
+      }),
+      h('div', {},
+        h('button', { onClick: this.create.bind(this) }, 'Add'),
+        h('button', { onClick: this.cancel.bind(this) }, 'Cancel')
+      )
     )
-  )
+  }
 }
 
 class Host extends Component {
