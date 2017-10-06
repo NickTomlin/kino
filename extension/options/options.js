@@ -8,11 +8,12 @@ function codeToMarkup (code) {
   )
 }
 
-function Action ({ actionName, code }) {
+function Action ({ actionName, code, onActionRemove }) {
   const __html = codeToMarkup(code)
 
   return h('div', { className: 'action' },
     h('p', { className: 'action-title' }, actionName),
+    h('button', { className: 'form-control', onClick: onActionRemove }, '- Remove'),
     h('pre', { className: 'code' }, h('code', {dangerouslySetInnerHTML: { __html }}))
   )
 }
@@ -44,12 +45,41 @@ class AddAction extends Component {
         ref: (c) => (this.textarea = c),
         placeholder: 'document.body.style.color = "red"',
         rows: 5,
-        cols: 50
+        cols: 60
       }),
       h('div', {},
         h('button', { onClick: this.create.bind(this) }, 'Add'),
         h('button', { onClick: this.cancel.bind(this) }, 'Cancel')
       )
+    )
+  }
+}
+
+class Actions extends Component {
+  renderActions () {
+    const { hostname, actions, onActionRemove } = this.props
+    return Object.keys(actions)
+      .map(actionName => h(Action, {
+        actionName,
+        onActionRemove: () => onActionRemove(hostname, actionName),
+        code: actions[actionName]
+      }))
+  }
+
+  render () {
+    const {
+      editing,
+      addAction
+    } = this.props
+
+    if (editing) { return null }
+
+    return h('div', {},
+      this.renderActions(),
+      h('button', {
+        className: 'form-control',
+        onClick: addAction
+      }, '+ Add action')
     )
   }
 }
@@ -69,36 +99,53 @@ class Host extends Component {
     this.setState({ editing: true })
   }
 
-  render () {
-    const { hostname, actions } = this.props
-    const { editing } = this.state
-    const renderedActions = Object.keys(actions)
-      .map(actionName => h(Action, {
-        actionName,
-        code: actions[actionName]
-      }))
+  removeHost () {
+    this.props.removeHost(this.props.hostname)
+  }
 
-    return h('div', { className: 'host' },
-      h('header', { className: 'hostname' },
+  render () {
+    const { hostname, actions, onActionRemove, onHostRemove } = this.props
+    const { editing } = this.state
+
+    return (
+      h('div', { className: 'host' },
+        h('header', { className: 'hostname' },
         h('span', { className: 'hostname-title' }, hostname),
-        h('button', {onClick: this.addAction.bind(this)}, '+ Add action'),
+        h('button', {
+          className: 'form-control',
+          onClick: () => onHostRemove(hostname)
+        }, '- Remove'),
         editing
-        ? h(AddAction, {
-          createAction: this.onActionChange.bind(this, hostname),
-          cancelCreateAction: () => { this.setState({ editing: false }) }
-        }) : null
-      ),
-      renderedActions
+          ? h(AddAction, {
+            createAction: this.onActionChange.bind(this, hostname),
+            cancelCreateAction: () => { this.setState({ editing: false }) }
+          }) : null
+        ),
+        h(Actions, {
+          hostname,
+          editing,
+          actions,
+          onActionRemove,
+          addAction: this.addAction.bind(this)
+        })
+      )
     )
   }
 }
 
-function Hostnames ({ mappings, onActionChange }) {
+function Hostnames ({
+  mappings,
+  onActionChange,
+  onActionRemove,
+  onHostRemove
+}) {
   return h('div', {}, Object.keys(mappings).map(hostname => {
     return h(Host, {
       hostname,
       actions: mappings[hostname],
-      onActionChange
+      onActionChange,
+      onActionRemove,
+      onHostRemove
     })
   }))
 }
@@ -182,6 +229,22 @@ class Options extends Component {
     this.setState({ mappings })
   }
 
+  async onActionRemove (hostname, actionName) {
+    const mappings = await Storage.get('mappings')
+    delete mappings[hostname][actionName]
+
+    await Storage.set({ mappings })
+    this.setState({ mappings })
+  }
+
+  async onHostRemove (hostname) {
+    const mappings = await Storage.get('mappings')
+    delete mappings[hostname]
+
+    await Storage.set({ mappings })
+    this.setState({ mappings })
+  }
+
   render () {
     const { mappings } = this.state
 
@@ -189,7 +252,12 @@ class Options extends Component {
 
     return h('div', {},
       h(AddHost, { onSubmit: this.onHostAdd.bind(this) }),
-      h(Hostnames, { mappings, onActionChange: this.onActionChange.bind(this) })
+      h(Hostnames, {
+        mappings,
+        onHostRemove: this.onHostRemove.bind(this),
+        onActionChange: this.onActionChange.bind(this),
+        onActionRemove: this.onActionRemove.bind(this)
+      })
     )
   }
 }
