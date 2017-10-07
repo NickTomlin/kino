@@ -21,19 +21,21 @@ Todo
 - [x] spike extension -> content script -> player controls (youtube)
 - [x] user defined commands
 
+### Niceties:
+
+- [ ] Figure out a more universal away to do pathing for node in host
+- [ ] Page action that allows you to add a host/action from the current page
+- [ ] Local storage based logging for troubleshooting
+- [ ] Pass metadata though action messages?
+
 Troubleshooting
 ---
 
-There is very light logging available via the event page:
-
-- Open the [background page](chrome-extension://gfonelhapmmnblbnniimhkdmnlopaabm/_generated_background_page.html) (or menu > "more tools" > "extensions" and click "background page")
-- Open the console
-- hit reload and see what error messages pop up
-- attempt to send a kino action `kino action toggle` and see if there is any logging
+There's currently not a great way to troubleshoot Kino issues without installing the extension unpacked. There are a few things you can do without this:
 
 ### Common issues
 
-- have you run `kino init` ?
+- have you installed `kino` globally and run `kino init` ?
 - Is `node` available at `/usr/local/bin/node`? If not, `ln -s <path to node> /usr/local/bin/node` and disable/enable the extension
   - alas, chrome cannot use `/usr/bin/env node` when launching the native extension host
 
@@ -47,3 +49,10 @@ Contributing
 4. Navigate to the repository directory and load it
 5. Run `./bin/kino init` to install the native messaging host
 6. Reload the extension
+
+There is very light logging available via the event page:
+
+- Open the [background page](chrome-extension://gfonelhapmmnblbnniimhkdmnlopaabm/_generated_background_page.html) (or menu > "more tools" > "extensions" and click "background page")
+- Open the console
+- hit reload and see what error messages pop up
+- attempt to send a kino action `kino action toggle` and see if there is any logging
