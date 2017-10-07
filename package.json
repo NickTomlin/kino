@@ -19,6 +19,7 @@
   },
   "files": ["bin", "host"],
   "standard": {
+    "ignore": ["extension/vendor"],
     "globals": [
       "chrome",
       "prism",
