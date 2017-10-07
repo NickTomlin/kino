@@ -1,4 +1,4 @@
-[Kino](https://www.wired.com/2011/11/1107wireless-remote-control/)
+[Kino](https://www.wired.com/2011/11/1107wireless-remote-control/) [![Build Status](https://travis-ci.org/NickTomlin/kino.svg?branch=master)](https://travis-ci.org/NickTomlin/kino) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 ---
 A chrome extension to easily manipulate chrome pages from the comfort of your text editor or OS.
 
