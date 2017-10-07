@@ -11,7 +11,7 @@ Usage
 1. Install the chrome plugin via the [chrome web store](https://chrome.google.com/webstore/detail/kino/gfonelhapmmnblbnniimhkdmnlopaabm)
 2. Install an editor plugin like the [vim plugin](https://github.com/nicktomlin/kino.vim) or the CLI via `kino action` directly
 
-Currently, there is only one supported action for `egghead.io` and `youtube`: `toggle`. All this does is toggle the 'play' button. A simple start :)
+By default, there are actions defined for toggling video playback on youtube.com and egghead.io as an example. You can add other domains and define custom actions for them via the options page. Once this is done, you can trigger an action using the client to play the code for that action on an active chrome tab for the corresponding domain.
 
 Todo
 ---
@@ -19,7 +19,7 @@ Todo
 - [x] spike extension -> native message host
 - [x] spike application -> native message host
 - [x] spike extension -> content script -> player controls (youtube)
-- [ ] user defined commands
+- [x] user defined commands
 
 Troubleshooting
 ---
