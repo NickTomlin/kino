@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Kino",
   "description": "This extension allows control of websites like youtube.com or egghead.io from the comfort of your text editor",
-  "version": "1.0",
+  "version": "1.1",
   "icons" : {
     "128": "kino-logo@3x.png"
   },
