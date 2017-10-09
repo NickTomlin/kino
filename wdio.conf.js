@@ -29,7 +29,7 @@ exports.config = {
   framework: 'mocha',
   services: ['chromedriver'],
   mochaOpts: {
-    timeout: DEBUGGING ? 99999 : 2000,
+    timeout: DEBUGGING ? 99999 : 5000,
     ui: 'bdd'
   }
 }

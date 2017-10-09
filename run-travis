@@ -1,4 +1,4 @@
-if [[ -v RUN_INTEGRATION_TESTS ]]; then
+if [[ -n $RUN_INTEGRATION_TESTS ]]; then
   echo 'Running integration tests'
   npm run test:integration 
 else
