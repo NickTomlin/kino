@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global browser, $, $$ */
+/* global browser, $ */
 
 const assert = require('assert')
 const defaultHostPrefix = '.host:last-child'

@@ -9,4 +9,4 @@ matrix:
 before_script:
   - '[[ -v RUN_INTEGRATION_TESTS ]] && export DISPLAY=:99.0 && sh -e /etc/init.d/xvfb start || true'
 script:
-  - sh run-travis.sh
+  - ./run-travis
