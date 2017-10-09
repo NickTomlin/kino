@@ -2,3 +2,11 @@ language: node_js
 node_js:
   - 6
   - 8
+matrix:
+  include:
+    - node_js: 8
+      env: RUN_INTEGRATION_TESTS=true
+before_script:
+  - '[[ -v RUN_INTEGRATION_TESTS ]] && export DISPLAY=:99.0 && sh -e /etc/init.d/xvfb start || true'
+script:
+  - sh run-travis.sh

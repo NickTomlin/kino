@@ -1,0 +1,7 @@
+if [[ -n RUN_INTEGRATION_TESTS ]]; then
+  echo 'Running integration tests'
+  npm run test:integration 
+else
+  echo 'Running normal tests'
+  npm test
+fi
