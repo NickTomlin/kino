@@ -23,7 +23,8 @@ fi
 
 NODE_PATH=$1
 HOST_NAME=com.nicktomlin.kino
-HOST_PATH=$DIR/native-messaging-host
+SOURCE_HOST_PATH=$DIR/native-messaging-host
+DEST_HOST_PATH=$DIR/native-messaging-host.initialized
 
 # Create directory to store native messaging host.
 mkdir -p "$TARGET_DIR"
@@ -34,10 +35,11 @@ cp "$DIR/$HOST_NAME.json" "$TARGET_DIR"
 # ensure that the shebang line in the native message host
 # is using the appropriate node path
 # (otherwise this causes issues with permissions when chrome attempts to start it)
-sed -i -e '1s|.*|#!'$NODE_PATH'|' $HOST_PATH
+cp -p $SOURCE_HOST_PATH $DEST_HOST_PATH
+sed -i -e '1s|.*|#!'$NODE_PATH'|' $DEST_HOST_PATH
 
 # Update host path in the manifest.
-ESCAPED_HOST_PATH=${HOST_PATH////\\/}
+ESCAPED_HOST_PATH=${DEST_HOST_PATH////\\/}
 sed -i -e "s/HOST_PATH/$ESCAPED_HOST_PATH/" "$TARGET_DIR/$HOST_NAME.json"
 
 # Set permissions for the manifest so that all users can read it.
