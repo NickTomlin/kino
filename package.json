@@ -10,7 +10,8 @@
   "scripts": {
     "test": "standard",
     "test:integration": "wdio",
-    "package": "zip -r kino.zip extension"
+    "extension:update": "zip -r kino.zip extension && node script/chrome-webstore update",
+    "extension:publish": "node script/chrome-webstore publish"
   },
   "keywords": [],
   "author": "Nick Tomlin <nick.tomlin@gmail.com>",
@@ -33,6 +34,8 @@
     ]
   },
   "devDependencies": {
+    "axios": "^0.16.2",
+    "dotenv": "^4.0.0",
     "standard": "^10.0.3",
     "wdio-chromedriver-service": "^0.1.1",
     "wdio-mocha-framework": "^0.5.11",
