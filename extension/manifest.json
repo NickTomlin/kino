@@ -15,7 +15,7 @@
   },
   "background": {
     "scripts": ["storage.js","event.js"],
-    "persistent": false
+    "persistent": true
   },
   "permissions": [
     "http://*/",
