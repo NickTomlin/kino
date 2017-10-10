@@ -13,7 +13,10 @@ function Action ({ actionName, code, onActionRemove }) {
 
   return h('div', { className: 'action' },
     h('p', { className: 'action-title' }, actionName),
-    h('button', { className: 'form-control', onClick: onActionRemove }, '- Remove'),
+    h('button', {
+      className: 'form-control remove-action',
+      onClick: onActionRemove
+    }, '- Remove'),
     h('pre', { className: 'code' }, h('code', {dangerouslySetInnerHTML: { __html }}))
   )
 }
@@ -35,21 +38,29 @@ class AddAction extends Component {
   }
 
   render () {
-    return h('div', {},
+    return h('div', { className: 'add-action-inputs' },
       h('input', {
         style: 'display: block',
         ref: (c) => (this.input = c),
+        className: 'action-name',
         placeholder: 'Action Name'
       }),
       h('textarea', {
         ref: (c) => (this.textarea = c),
+        className: 'action-code',
         placeholder: 'document.body.style.color = "red"',
         rows: 5,
         cols: 60
       }),
       h('div', {},
-        h('button', { onClick: this.create.bind(this) }, 'Add'),
-        h('button', { onClick: this.cancel.bind(this) }, 'Cancel')
+        h('button', {
+          className: 'confirm-action-add',
+          onClick: this.create.bind(this)
+        }, 'Add'),
+        h('button', {
+          className: 'cancel-action-add',
+          onClick: this.cancel.bind(this)
+        }, 'Cancel')
       )
     )
   }
@@ -77,7 +88,7 @@ class Actions extends Component {
     return h('div', {},
       this.renderActions(),
       h('button', {
-        className: 'form-control',
+        className: 'form-control add-action',
         onClick: addAction
       }, '+ Add action')
     )
@@ -108,11 +119,11 @@ class Host extends Component {
     const { editing } = this.state
 
     return (
-      h('div', { className: 'host' },
+      h('div', { className: 'host', 'data-hostname': hostname },
         h('header', { className: 'hostname' },
         h('span', { className: 'hostname-title' }, hostname),
         h('button', {
-          className: 'form-control',
+          className: 'form-control remove-host',
           onClick: () => onHostRemove(hostname)
         }, '- Remove'),
         editing
@@ -178,11 +189,15 @@ class AddHost extends Component {
     return h('div', null,
       h('input', {
         style: this.state.valid ? '' : `border: 1px solid red`,
+        className: 'add-host-input',
         placeholder: 'https://example.com',
         onKeyup: this.onKeyup.bind(this),
         ref: c => (this.input = c)
       }, null),
-      h('button', { onClick: this.onSubmit.bind(this) }, '+ Add Host'),
+      h('button', {
+        className: 'add-host',
+        onClick: this.onSubmit.bind(this)
+      }, '+ Add Host'),
       this.state.error ? h('span', {}, this.state.error) : null
     )
   }

@@ -9,6 +9,7 @@
   },
   "scripts": {
     "test": "standard",
+    "test:integration": "wdio",
     "package": "zip -r kino.zip extension"
   },
   "keywords": [],
@@ -17,9 +18,14 @@
   "dependencies": {
     "util.promisify": "^1.0.0"
   },
-  "files": ["bin", "host"],
+  "files": [
+    "bin",
+    "host"
+  ],
   "standard": {
-    "ignore": ["extension/vendor"],
+    "ignore": [
+      "extension/vendor"
+    ],
     "globals": [
       "chrome",
       "prism",
@@ -27,6 +33,9 @@
     ]
   },
   "devDependencies": {
-    "standard": "^10.0.3"
+    "standard": "^10.0.3",
+    "wdio-chromedriver-service": "^0.1.1",
+    "wdio-mocha-framework": "^0.5.11",
+    "webdriverio": "^4.8.0"
   }
 }
