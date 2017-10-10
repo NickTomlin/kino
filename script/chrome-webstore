@@ -1,0 +1,107 @@
+#!/usr/bin/env node
+
+const fs = require('fs')
+const dotenv = require('dotenv')
+const axios = require('axios')
+const querystring = require('querystring')
+const { promisify } = require('util')
+dotenv.load()
+
+const {
+  KINO_CLIENT_ID,
+  KINO_CLIENT_SECRET,
+  KINO_EXTENSION_ID,
+  KINO_REFRESH_TOKEN
+} = process.env
+
+const publishUrl = `https://www.googleapis.com/chromewebstore/v1.1/items/${KINO_EXTENSION_ID}/publish`
+const updateUrl = `https://www.googleapis.com/upload/chromewebstore/v1.1/items/${KINO_EXTENSION_ID}`
+const readFile = promisify(fs.readFile)
+
+function getHeaders (accessToken, overrides = {}) {
+  return Object.assign({}, {
+    Authorization: `Bearer ${accessToken}`
+  }, overrides)
+}
+
+function logErrors (e) {
+  if (e.response && e.response.data.error) {
+    console.log('error:', JSON.stringify(e.response.data.error))
+  }
+}
+
+function getAccessToken () {
+  const url = 'https://accounts.google.com/o/oauth2/token'
+
+  return axios.post(url, querystring.stringify({
+    client_id: KINO_CLIENT_ID,
+    client_secret: KINO_CLIENT_SECRET,
+    grant_type: 'refresh_token',
+    refresh_token: KINO_REFRESH_TOKEN
+  }), {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  }).then(res => res.data.access_token)
+}
+
+async function updateExtension (accessToken, zipBlob) {
+  const headers = getHeaders(accessToken)
+  return axios.put(updateUrl, zipBlob, { headers })
+}
+
+async function publishExtension (accessToken, trusted) {
+  const headers = getHeaders(accessToken)
+  const suffix = trusted ? '?publishTarget=trustedTesters' : ''
+  return axios.post(`${publishUrl}${suffix}`, {}, { headers })
+}
+
+async function update (zipPath) {
+  try {
+    const accessToken = await getAccessToken()
+    const zipBlob = await readFile(zipPath)
+    const response = await updateExtension(accessToken, zipBlob)
+    console.log('Done updating', response.data)
+
+    if (response.data.itemError) {
+      let e = new Error(`Error Updating: ${JSON.stringify(response.data)}`)
+      e.response = { data: { error: response.data.itemError } }
+      throw e
+    }
+  } catch (e) {
+    console.error('There was an error updating extension')
+    logErrors(e)
+    throw e
+  }
+}
+
+async function publish (trusted) {
+  try {
+    const accessToken = await getAccessToken()
+    const response = await publishExtension(accessToken, trusted)
+    console.log('Done publishing', response.data)
+  } catch (e) {
+    console.log('Error publishing', e)
+    logErrors(e)
+    throw e
+  }
+}
+
+const command = process.argv[2]
+
+switch (command) {
+  case 'update':
+    const zipPath = process.argv[3] || 'kino.zip'
+    update(zipPath)
+    break
+
+  case 'publish':
+    publish(process.argv[3])
+    break
+
+  default:
+    console.log(`chrome-webstore - helper for interacting with the chrome webstore api
+      update <zip file path: optional> - Update an extension (update is saved as a draft)
+      publish <'trusted': optional> - Publish an updated extension draft. Optionally publish to truestedTesters by specifying 'trusted'
+    `)
+}
