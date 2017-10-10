@@ -4,14 +4,19 @@ const Client = require('../host/client')
 const { execSync } = require('child_process')
 const { join } = require('path')
 
-const usage = `kino - a small client to talk to your browser
-usage: kino <action> <arguments>
+const usage = `usage: kino <command> <arguments>
 
-init <path-to-node: (optional)>- install the kino native extension host
-  * path-to-node - the path to node executable to use in the host shebang (#!/path/to/node)
-action <action-name> - send an action to the native extension host
-  * action-name - name of action to send to extension via native message host
-help - print this message
+Kino is a small node client to send messages between your native system and chrome.
+
+Commands:
+
+  init <path-to-node: (optional)>- install the kino native extension host
+    * path-to-node - the path to node executable to use in the host shebang (#!/path/to/node)
+
+  action <action-name> - send an action to the native extension host
+    * action-name - name of action to send to extension via native message host
+
+  help - print this message
 `
 
 const command = process.argv[2]
@@ -21,8 +26,7 @@ switch (command) {
     const installScript = join(__dirname, '../host/install.sh')
     const nodePath = process.argv[3] || process.argv[0]
     const cmd = `${installScript} ${nodePath}`
-    const result = execSync(cmd).toString()
-    console.log(result)
+    process.stdout.write(execSync(cmd))
     break
   case 'action':
     Client.action(process.argv[3])
