@@ -2,8 +2,6 @@
 ---
 A chrome extension to easily manipulate chrome pages from the comfort of your text editor or OS.
 
-> ⚠️ This is currently an alpha; feel free to use it but don't expect amazing things ⚠️
-
 Usage
 ---
 
@@ -20,10 +18,10 @@ Todo
 - [x] spike application -> native message host
 - [x] spike extension -> content script -> player controls (youtube)
 - [x] user defined commands
+- [x] Figure out a more universal away to do pathing for node in host
 
 ### Niceties:
 
-- [ ] Figure out a more universal away to do pathing for node in host
 - [ ] Page action that allows you to add a host/action from the current page
 - [ ] Local storage based logging for troubleshooting
 - [ ] Pass metadata though action messages?
@@ -31,7 +29,7 @@ Todo
 Troubleshooting
 ---
 
-There's currently not a great way to troubleshoot Kino issues without installing the extension unpacked. There are a few things you can do without this:
+There's currently not a great way to troubleshoot Kino issues without installing the extension unpacked. There are a few things you can do without going into Dev mode:
 
 ### Common issues
 
@@ -47,10 +45,11 @@ Contributing
 2. In chrome, go to `tools > extensions`
 3. Click "load unpacked extension"
 4. Navigate to the repository directory and load it
+5. Take note of the "id: <string>" under the loaded extension and add it to the `allowed_origins` array in `host/com.nicktomlin.kino.json`
 5. Run `./bin/kino init` to install the native messaging host
 6. Reload the extension
 
-There is very light logging available via the event page:
+There is very light logging available via the background page:
 
 - Open the [background page](chrome-extension://gfonelhapmmnblbnniimhkdmnlopaabm/_generated_background_page.html) (or menu > "more tools" > "extensions" and click "background page")
 - Open the console
