@@ -8,11 +8,20 @@ function codeToMarkup (code) {
   )
 }
 
-function Action ({ actionName, code, onActionRemove }) {
+function Action ({
+  actionName,
+  code,
+  onActionRemove,
+  onActionEdit
+}) {
   const __html = codeToMarkup(code)
 
   return h('div', { className: 'action' },
     h('p', { className: 'action-title' }, actionName),
+    h('button', {
+      className: 'form-control edit-action',
+      onClick: () => onActionEdit(actionName, code)
+    }, '~ Edit'),
     h('button', {
       className: 'form-control remove-action',
       onClick: onActionRemove
@@ -21,14 +30,32 @@ function Action ({ actionName, code, onActionRemove }) {
   )
 }
 
-class AddAction extends Component {
+class ActionEditor extends Component {
+  constructor (props) {
+    const {
+      actionName,
+      actionCode
+    } = props
+
+    super()
+
+    this.state = {
+      actionName,
+      actionCode
+    }
+  }
+
   clearInputs () {
-    this.textarea.value = ''
-    this.input.value = ''
+    this.setState({
+      actionName: '',
+      actionCode: ''
+    })
   }
 
   create () {
-    this.props.createAction(this.input.value, this.textarea.value)
+    const { actionName, actionCode } = this.state
+    const originalActionName = this.props.actionName
+    this.props.createAction(actionName, originalActionName, actionCode)
     this.clearInputs()
   }
 
@@ -37,17 +64,27 @@ class AddAction extends Component {
     this.props.cancelCreateAction()
   }
 
+  handleChange (key, event) {
+    this.setState({
+      [key]: event.target.value
+    })
+  }
+
   render () {
+    const { actionName, actionCode } = this.state
     return h('div', { className: 'add-action-inputs' },
       h('input', {
         style: 'display: block',
-        ref: (c) => (this.input = c),
+        value: actionName,
+        onChange: this.handleChange.bind(this, 'actionName'),
+        defaultValue: actionName,
         className: 'action-name',
         placeholder: 'Action Name'
       }),
       h('textarea', {
-        ref: (c) => (this.textarea = c),
         className: 'action-code',
+        onChange: this.handleChange.bind(this, 'actionCode'),
+        value: actionCode,
         placeholder: 'document.body.style.color = "red"',
         rows: 5,
         cols: 60
@@ -68,10 +105,16 @@ class AddAction extends Component {
 
 class Actions extends Component {
   renderActions () {
-    const { hostname, actions, onActionRemove } = this.props
+    const {
+      hostname,
+      actions,
+      onActionRemove,
+      onActionEdit
+    } = this.props
     return Object.keys(actions)
       .map(actionName => h(Action, {
         actionName,
+        onActionEdit,
         onActionRemove: () => onActionRemove(hostname, actionName),
         code: actions[actionName]
       }))
@@ -101,13 +144,17 @@ class Host extends Component {
     this.editing = false
   }
 
-  onActionChange (hostname, actionName, code) {
+  onActionChange (hostname, actionName, originalActionName, code) {
     this.setState({ editing: false })
-    this.props.onActionChange(hostname, actionName, code)
+    this.props.onActionChange(hostname, actionName, originalActionName, code)
   }
 
   addAction () {
     this.setState({ editing: true })
+  }
+
+  editAction (hostname, actionName, actionCode) {
+    this.setState({ editing: true, actionName, actionCode })
   }
 
   removeHost () {
@@ -116,7 +163,7 @@ class Host extends Component {
 
   render () {
     const { hostname, actions, onActionRemove, onHostRemove } = this.props
-    const { editing } = this.state
+    const { editing, actionName, actionCode } = this.state
 
     return (
       h('div', { className: 'host', 'data-hostname': hostname },
@@ -127,7 +174,9 @@ class Host extends Component {
           onClick: () => onHostRemove(hostname)
         }, '- Remove'),
         editing
-          ? h(AddAction, {
+          ? h(ActionEditor, {
+            actionName,
+            actionCode,
             createAction: this.onActionChange.bind(this, hostname),
             cancelCreateAction: () => { this.setState({ editing: false }) }
           }) : null
@@ -137,7 +186,8 @@ class Host extends Component {
           editing,
           actions,
           onActionRemove,
-          addAction: this.addAction.bind(this)
+          addAction: this.addAction.bind(this),
+          onActionEdit: this.editAction.bind(this, hostname)
         })
       )
     )
@@ -233,11 +283,15 @@ class Options extends Component {
     ))
   }
 
-  async onActionChange (hostname, actionName, code) {
-    const mappings = await Storage.get('mappings')
+  async onActionChange (hostname, actionName, originalActionName, code) {
+    let mappings = await Storage.get('mappings')
     mappings[hostname] = {
       ...mappings[hostname],
       [actionName]: code
+    }
+
+    if (originalActionName !== actionName) {
+      delete mappings[hostname][originalActionName]
     }
 
     await Storage.set({ mappings })
