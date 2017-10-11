@@ -1,3 +1,4 @@
 node_modules
 test/extension/failure-screenshots
 .env
+host/native-messaging-host.initialized*
