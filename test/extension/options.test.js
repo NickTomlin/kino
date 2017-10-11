@@ -43,7 +43,7 @@ describe('Kino: chrome extension', () => {
 
   it('allows a user to add a host', async () => {
     const newHostname = 'www.biz.com'
-    // TODO: classes to make this more specific
+
     await $('.add-host-input')
       .setValue(`https://${newHostname}`)
       .keys('Enter')
@@ -65,6 +65,21 @@ describe('Kino: chrome extension', () => {
     await browser.click(`${defaultHostPrefix} .action .remove-action`)
     const newElements = await browser.elements(`${defaultHostPrefix} .action`)
 
-    assert(newElements.value.length === oldElements.value.length - 1)
+    assert(newElements.value.length === oldElements.value.length - 1, 'The action was not removed')
+  })
+
+  it('allows a user to edit an existing action for a host', async () => {
+    await createAction()
+    const oldElements = await browser.elements(`${defaultHostPrefix} .action`)
+
+    await browser.click(`${defaultHostPrefix} .action .edit-action`)
+    await browser.setValue(`${defaultHostPrefix} .action-name`, 'i-was-edited')
+    await browser.click(`${defaultHostPrefix} .confirm-action-add`)
+
+    const newElements = await browser.elements(`${defaultHostPrefix} .action`)
+    assert.equal(newElements.value.length, oldElements.value.length, 'A new action was added instead of keeping existing action')
+
+    const newActionTitleExists = await browser.isExisting(`//p[@class='action-title' and contains(text(), 'i-was-edited')]`)
+    assert(newActionTitleExists, 'Action title was not updated')
   })
 })
