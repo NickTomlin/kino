@@ -1,11 +1,14 @@
 #!/usr/local/bin/node
 
+const os = require('os')
 const Server = require('./server')
+
+const writeUInt32 = `writeUInt32${os.endianness()}`
 
 function sendMessageToBrowser (message) {
   let length = Buffer.alloc(4)
   let reply = Buffer.from(message)
-  length.writeUInt32LE(reply.byteLength, 0)
+  length[writeUInt32](reply.byteLength, 0)
 
   process.stdout.write(length)
   process.stdout.write(reply)
