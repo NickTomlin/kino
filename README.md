@@ -11,6 +11,10 @@ Usage
 
 By default, there are actions defined for toggling video playback on youtube.com and egghead.io as an example. You can add other domains and define custom actions for them via the options page. Once this is done, you can trigger an action using the client to play the code for that action on an active chrome tab for the corresponding domain.
 
+Here's a quick start video to help you get up and running: 
+
+[![Kino Quick Start](https://img.youtube.com/vi/5KL63mD229c/0.jpg)](https://www.youtube.com/watch?v=5KL63mD229c)
+
 Todo
 ---
 
